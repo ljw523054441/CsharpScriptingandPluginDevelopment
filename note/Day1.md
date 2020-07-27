@@ -379,3 +379,22 @@ private void RunScript(...)
 }
 ```
 
+## Generate random points within a predefined range
+
+## Persistent Data in the C# Script Component
+
+```c#
+public class Script_Instance : GH_ScriptInstance
+{
+    private void RunScript(object x,object y,ref object A)//主函数
+    {
+        n += 1;
+        Print(n.ToString());
+    }
+
+    int n = 0;//主函数之外
+    //它在主函数运行结束后并不会消失，而是仍留存在C#电池的内存中
+}
+```
+
+## Circle Relaxation
