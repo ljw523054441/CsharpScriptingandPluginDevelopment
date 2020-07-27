@@ -398,3 +398,7 @@ public class Script_Instance : GH_ScriptInstance
 ```
 
 ## Circle Relaxation
+
+## Output and display intermediate result
+
+## Curve subdivision growth
