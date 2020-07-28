@@ -1,0 +1,8 @@
+C:\Users\52305\Documents\code\csharp\CsharpScriptingandPluginDevelopment\Day2\Workshop\bin\Workshop.dll
+C:\Users\52305\Documents\code\csharp\CsharpScriptingandPluginDevelopment\Day2\Workshop\bin\Workshop.pdb
+C:\Users\52305\Documents\code\csharp\CsharpScriptingandPluginDevelopment\Day2\Workshop\obj\Debug\Workshop.csprojAssemblyReference.cache
+C:\Users\52305\Documents\code\csharp\CsharpScriptingandPluginDevelopment\Day2\Workshop\obj\Debug\Workshop.csproj.CoreCompileInputs.cache
+C:\Users\52305\Documents\code\csharp\CsharpScriptingandPluginDevelopment\Day2\Workshop\obj\Debug\Workshop.dll
+C:\Users\52305\Documents\code\csharp\CsharpScriptingandPluginDevelopment\Day2\Workshop\obj\Debug\Workshop.pdb
+C:\Users\52305\Documents\code\csharp\CsharpScriptingandPluginDevelopment\Day2\Workshop\obj\Debug\Workshop.Properties.Resources.resources
+C:\Users\52305\Documents\code\csharp\CsharpScriptingandPluginDevelopment\Day2\Workshop\obj\Debug\Workshop.csproj.GenerateResource.cache
