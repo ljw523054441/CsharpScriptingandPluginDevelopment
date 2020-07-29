@@ -57,11 +57,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GhcAverage.cs" />
+    <Compile Include="GhcCentroid.cs" />
+    <Compile Include="GhcCreatePyramid.cs" />
+    <Compile Include="GhcMovingParticle.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Pyramid.cs" />
     <Compile Include="WorkshopComponent.cs" />
     <Compile Include="WorkshopInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

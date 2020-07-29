@@ -1,4 +1,4 @@
-## visual studio
+## Visual Studio
 
 ## Live example: our first grasshopper plugin
 rhino6 选择.NET Framework 4.5
@@ -85,7 +85,7 @@ public WorkshopComponent()
 			pManager.AddNumberParameter("Average Value", "Average", "The average value", GH_ParamAccess.item);
 		}
 ```
-
+## The "Average" component - the main part
 ```c#
     protected override void SolveInstance(IGH_DataAccess DA)
 		{
@@ -145,6 +145,119 @@ visual studio设置：
 			}
 		}
 ```
+## The "Average" component - check for input validity
+```c#
+protected override void SolveInstance(IGH_DataAccess DA)
+		{
+			double a = double.NaN;
+			double b = double.NaN;
 
+			bool success1 = DA.GetData(0, ref a);
+			bool success2 = DA.GetData(1, ref b);
 
-## The "Average" component - the constructor
+			if (success1 && success2)
+			{
+				double average = 0.5 * (a + b);
+				
+				DA.SetData(0, average);//send the value of average to the output part
+			}
+            else
+            {
+				AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Check the inputs, you idiot!!!");
+				//显示电池运行错误时候出现的红色小气球，Error表示错误会显示红色，Warning表示警告会显示橙黄色
+            }
+		}
+```
+## Inputs and outputs as **lists**
+
+### Live example: A component that computes the centroid of a set of points, and the distance from the centroid to each point
+
+```c#
+	protected override void SolveInstance(IGH_DataAccess DA)
+        {
+            List<Point3d> iPoints =  new List<Point3d>();
+            DA.GetDataList("Points", iPoints);//第一个参数可以用输入时的name或者是输入时的序号
+
+            Point3d centroid = new Point3d(0.0,0.0,0.0);
+            foreach (Point3d point  in iPoints)
+            {
+                centroid += point;
+            }
+            centroid /= iPoints.Count;
+            DA.SetData("Centroid", centroid);
+
+            List<double> distances = new List<double>();
+            foreach (Point3d point in iPoints)
+            {
+                distances.Add(centroid.DistanceTo(point));
+            }
+            DA.SetDataList("Distance", distances);
+        }
+```
+
+## Moving Particle
+
+## Objected-Oriented Programming
+class = user-defined data type
+
+### Defining a class
+
+#### use grasshopper C# script
+
+把这部分代码放进// <Custom additional code>中
+```c#
+class Pyramid
+{
+    public Plane BasePlane;
+    public double Lenght;
+    public double Width;
+    public double Height;
+
+    //构造函数 - 声明并实现
+    public Pyramid(Plane basePlane, double length, double width, double height)
+    {
+        //similar to the __init__ function in python
+        BasePlane = basePlane;
+        Length = length;
+        Width = width;
+        Height = height;
+    }
+    //重载构造函数
+    public Pyramid(double length, double width, double height)
+    {
+        BasePlane = Plane.WorldXY;
+        Length = length;
+        Width = width;
+        Height = height;
+    }
+    //默认构造函数
+    public Pyramid()
+    {
+        BasePlane = Plane.WorldXY;
+        Length = 1.0;
+        Width = 1.0;
+        Height = 1.0;
+    }
+
+    public double ComputeVolume()
+    {
+        return 0.3333 * Length * Width * Height;
+    }
+}
+```
+### Using the class(client code)
+#### 把这部分代码放进private void RunScript(object x, object y, ref object A)内
+```c#
+// Pyramid myPyramid = new Pyramid();
+
+// myPyramid.BasePlane = Plane.WorldXY;
+// myPyramid.Length = 1.2;
+// myPyramid.Wideth = 3.4;
+// myPyramid.Height = 5.6;
+
+Pyramid myPyramid = new Pyramid(Plane.WorldXY,1.2,3.4,5.6);
+Pyramid yourPyramid = new Pyramid(3.4,5.6,1.2);
+Pyramdi hisPyramid = new Pyramid();
+
+Print(myPyramid.ComputeVolume().ToString());
+```
