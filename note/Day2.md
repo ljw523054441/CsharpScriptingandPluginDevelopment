@@ -261,3 +261,81 @@ Pyramdi hisPyramid = new Pyramid();
 
 Print(myPyramid.ComputeVolume().ToString());
 ```
+
+## Visual Studio debugger
+先用debug模式生成解决方案，然后点击调试，开始调试，它会自动打开一个被Visual Studio监视的rhino，然后手动打开gh，然后手动拉取电池进行测试，可以打断点
+
+## 对于public关键字
+public在class中的作用跟C++相同
+
+对于私有属性，也跟C++一样，可以通过定义get/set方法的方式，来进行访问和修改
+```c#
+class Pyramid
+{
+    private double length;
+    ...
+    public double GetLength()
+    {
+        return length;
+    }
+    public double SetLength(double inputLength)
+    {
+        if(inputLength > 0.0)
+            length = inputLength;
+        else
+            length = 0.0;
+    }
+}
+```
+
+也可以通过define a "Property"的方式来代替Get/Set
+```c#
+//Class Definition
+class Pyramid
+{
+    private double lenght;
+
+    public double Length
+    {
+        get { return length;}
+
+        set
+        {
+            if(value > 0.0)
+                length = value;
+            else
+                length = 0.0;
+        }
+
+    }
+}
+
+//Client Code
+Pyramid myPyramid = new Pyramid();
+
+double myLength = myPyramid.Lenght;
+
+myPyramid.Length = -2.0;
+```
+
+## Mesh Growth - by subdivision and avoiding self-collision
+
+### Two essential mechanisms(机制)
+1. vertices push each other away(using sphere-sphere collision)
+2. As an edge gets longer than a given threshold, it will be split into two shorter edges
+
+### Two extra mechanisms
+1. Edge Length constraint(约束):Prevent an edge from getting too long
+2. Bending resistance: Each pair of adjacent triangles will try to be flat
+
+选择使用plankton mesh而不使用rhinocommon mesh：
+- 因为rhinocommon mesh多适用于不太会变化的网格，因为其本身的存储网格信息的数据形式的限制
+  - for example
+  - Face[0] refers to v2,v4,v1
+  - Face[1] refers to v0,v3,v2,v1
+  - Face[2] refers to v2,v3,v5
+
+Halfedge Mesh: An alternative way to represent a mesh
+- Each half-edge explicitly knows about:
+  - its start vertax
+  - the previous & next half edge in the cycle
