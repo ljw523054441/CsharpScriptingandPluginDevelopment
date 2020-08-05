@@ -15,6 +15,10 @@ namespace MeshGrowth
         private PlanktonMesh ptMesh;
 
         public bool Grow = false;
+        public int MaxVertexCount;
+
+        public bool UseRTree;
+
         public double EdgeLengthConstrainWeight;
         public double CollisionDistance;
         public double CollisionWeight;
@@ -35,6 +39,8 @@ namespace MeshGrowth
 
         public void Update()
         {
+            if (Grow) SplitAllLongEdges();
+
             totalWeightedMoves = new List<Vector3d>();
             totalWeights = new List<double>();
 
@@ -45,7 +51,14 @@ namespace MeshGrowth
             }
 
             ProcessCollision();
+            ProcessBendingResistance();
+
             UpdateVertexPositions();
+        }
+
+        private void ProcessBendingResistance()
+        {
+            
         }
 
         private void UpdateVertexPositions()
@@ -68,7 +81,7 @@ namespace MeshGrowth
             {
                 for(int j = i+1;j<vertexCount;j++)
                 {
-                    Vector3d move = ptMesh.Vertices[i].ToPoint3d() - ptMesh.Vertices[j].ToPoint3d();
+                    Vector3d move = ptMesh.Vertices[j].ToPoint3d() - ptMesh.Vertices[i].ToPoint3d();
                     double currentDistance = move.Length;
                     if (currentDistance > CollisionDistance) continue;
 
@@ -82,25 +95,36 @@ namespace MeshGrowth
             }
         }
 
+        private void SplitAllLongEdges()
+        {
+            int halfEdgeCount = ptMesh.Halfedges.Count;
+
+            for(int i = 0;i<halfEdgeCount;i+=2)
+            {
+                if(ptMesh.Vertices.Count<MaxVertexCount &&
+                   ptMesh.Halfedges.GetLength(i)>0.99*CollisionDistance)
+                {
+                    SplitEdge(i);
+                }
+            }
+        }
         
-
-
-        /*
+        
         private void SplitEdge(int edgeIndex)
         {
-            int newHalfEdgeIndex = Mesh.Halfedges.SplitEdge(edgeIndex);
+            int newHalfEdgeIndex = ptMesh.Halfedges.SplitEdge(edgeIndex);
 
-            Mesh.Vertices.SetVertex(
-                Mesh.Vertices.Count - 1,
-                0.5 * (Mesh.Vertices[Mesh.Halfedges[edgeIndex].StartVertex].ToPoint3d() + Mesh.Vertices[Mesh.Halfedges[edgeIndex + 1].StartVertex].ToPoint3d()));
+            ptMesh.Vertices.SetVertex(
+                ptMesh.Vertices.Count - 1,
+                0.5 * (ptMesh.Vertices[ptMesh.Halfedges[edgeIndex].StartVertex].ToPoint3d() + ptMesh.Vertices[ptMesh.Halfedges[edgeIndex + 1].StartVertex].ToPoint3d()));
 
-            if (Mesh.Halfedges[edgeIndex].AdjacentFace >= 0)
-                Mesh.Faces.SplitFace(newHalfEdgeIndex, Mesh.Halfedges[edgeIndex].PrevHalfedge);
+            if (ptMesh.Halfedges[edgeIndex].AdjacentFace >= 0)
+                ptMesh.Faces.SplitFace(newHalfEdgeIndex, ptMesh.Halfedges[edgeIndex].PrevHalfedge);
 
-            if (Mesh.Halfedges[edgeIndex + 1].AdjacentFace >= 0)
-                Mesh.Faces.SplitFace(edgeIndex + 1, Mesh.Halfedges[Mesh.Halfedges[edgeIndex + 1].NextHalfedge].NextHalfedge);
+            if (ptMesh.Halfedges[edgeIndex + 1].AdjacentFace >= 0)
+                ptMesh.Faces.SplitFace(edgeIndex + 1, ptMesh.Halfedges[ptMesh.Halfedges[edgeIndex + 1].NextHalfedge].NextHalfedge);
         }
-        */
+        
     }
 
 }

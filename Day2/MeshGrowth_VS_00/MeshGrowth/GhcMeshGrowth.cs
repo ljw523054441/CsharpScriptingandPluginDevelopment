@@ -78,10 +78,15 @@ namespace MeshGrowth
 
             //=============================================================================================
 
-            if (iReset)
+            if (iReset || myMeshGrowthSystem == null)
                 myMeshGrowthSystem = new MeshGrowthSystem(iStartingMesh);
 
+            myMeshGrowthSystem.Grow = iGrow;
+            myMeshGrowthSystem.MaxVertexCount = iMaxVertexCount;
+            myMeshGrowthSystem.EdgeLengthConstrainWeight = iEdgeLengthConstrainWeight;
             myMeshGrowthSystem.CollisionDistance = iCollisionDistance;
+            myMeshGrowthSystem.BendingResistanceWeight = iBendingResistanceWeight;
+            myMeshGrowthSystem.UseRTree = iUseRTree;
 
             myMeshGrowthSystem.Update();
 
