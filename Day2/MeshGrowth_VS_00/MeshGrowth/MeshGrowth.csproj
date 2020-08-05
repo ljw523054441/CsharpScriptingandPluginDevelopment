@@ -34,11 +34,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Plankton">
-      <HintPath>..\..\..\..\..\..\..\AppData\Roaming\Grasshopper\Libraries\Plankton\Plankton.dll</HintPath>
+      <HintPath>C:\Users\po\AppData\Roaming\Grasshopper\Libraries\Plankton.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="PlanktonGh">
-      <HintPath>..\..\..\..\..\..\..\AppData\Roaming\Grasshopper\Libraries\Plankton\PlanktonGh.dll</HintPath>
+      <HintPath>C:\Users\po\AppData\Roaming\Grasshopper\Libraries\PlanktonGh.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -69,6 +69,17 @@
     <Compile Include="MeshGrowthInfo.cs" />
     <Compile Include="MeshGrowthSystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -80,7 +91,7 @@
   -->
   <PropertyGroup>
     <PostBuildEvent>Copy "$(TargetPath)" "$(TargetDir)$(ProjectName).gha"
-Copy "$(TargetPath)" "C:\Users\52305\AppData\Roaming\Grasshopper\Libraries\MeshGrowth.gha"
+Copy "$(TargetPath)" "C:\Users\po\AppData\Roaming\Grasshopper\Libraries\MeshGrowth.gha"
 Erase "$(TargetPath)"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>

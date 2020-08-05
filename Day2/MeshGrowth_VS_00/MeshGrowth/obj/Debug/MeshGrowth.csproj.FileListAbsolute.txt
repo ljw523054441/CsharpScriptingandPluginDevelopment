@@ -6,3 +6,11 @@ C:\Users\52305\Documents\code\csharp\CsharpScriptingandPluginDevelopment\Day2\Me
 C:\Users\52305\Documents\code\csharp\CsharpScriptingandPluginDevelopment\Day2\MeshGrowth_VS_00\MeshGrowth\obj\Debug\MeshGrowth.csproj.CoreCompileInputs.cache
 C:\Users\52305\Documents\code\csharp\CsharpScriptingandPluginDevelopment\Day2\MeshGrowth_VS_00\MeshGrowth\obj\Debug\MeshGrowth.dll
 C:\Users\52305\Documents\code\csharp\CsharpScriptingandPluginDevelopment\Day2\MeshGrowth_VS_00\MeshGrowth\obj\Debug\MeshGrowth.pdb
+H:\Code\C#\CsharpScriptingandPluginDevelopment\Day2\MeshGrowth_VS_00\MeshGrowth\bin\MeshGrowth.dll
+H:\Code\C#\CsharpScriptingandPluginDevelopment\Day2\MeshGrowth_VS_00\MeshGrowth\bin\MeshGrowth.pdb
+H:\Code\C#\CsharpScriptingandPluginDevelopment\Day2\MeshGrowth_VS_00\MeshGrowth\obj\Debug\MeshGrowth.csprojAssemblyReference.cache
+H:\Code\C#\CsharpScriptingandPluginDevelopment\Day2\MeshGrowth_VS_00\MeshGrowth\obj\Debug\MeshGrowth.Properties.Resources.resources
+H:\Code\C#\CsharpScriptingandPluginDevelopment\Day2\MeshGrowth_VS_00\MeshGrowth\obj\Debug\MeshGrowth.csproj.GenerateResource.cache
+H:\Code\C#\CsharpScriptingandPluginDevelopment\Day2\MeshGrowth_VS_00\MeshGrowth\obj\Debug\MeshGrowth.csproj.CoreCompileInputs.cache
+H:\Code\C#\CsharpScriptingandPluginDevelopment\Day2\MeshGrowth_VS_00\MeshGrowth\obj\Debug\MeshGrowth.dll
+H:\Code\C#\CsharpScriptingandPluginDevelopment\Day2\MeshGrowth_VS_00\MeshGrowth\obj\Debug\MeshGrowth.pdb

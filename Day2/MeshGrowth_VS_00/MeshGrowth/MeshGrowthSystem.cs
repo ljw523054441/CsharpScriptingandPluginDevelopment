@@ -58,7 +58,38 @@ namespace MeshGrowth
 
         private void ProcessBendingResistance()
         {
-            
+            int halfEdgeCount = ptMesh.Halfedges.Count;
+
+            for (int k = 0; k < halfEdgeCount; k += 2)
+            {
+                int i = ptMesh.Halfedges[k].StartVertex;
+                int j = ptMesh.Halfedges[k + 1].StartVertex;
+                int p = ptMesh.Halfedges[ptMesh.Halfedges[k].PrevHalfedge].StartVertex;
+                int q = ptMesh.Halfedges[ptMesh.Halfedges[k + 1].PrevHalfedge].StartVertex;
+
+                Point3d vI = ptMesh.Vertices[i].ToPoint3d();
+                Point3d vJ = ptMesh.Vertices[j].ToPoint3d();
+                Point3d vP = ptMesh.Vertices[p].ToPoint3d();
+                Point3d vQ = ptMesh.Vertices[q].ToPoint3d();
+
+                Vector3d nP = Vector3d.CrossProduct(vJ - vI, vP - vI);
+                Vector3d nQ = Vector3d.CrossProduct(vJ - vI, vQ - vI);
+
+                Vector3d planeNormal = nP + nQ;
+                Point3d planeOrigin = 0.25 * (vI + vJ + vP + vQ);
+
+                Plane plane = new Plane(planeOrigin, planeNormal);
+
+                totalWeightedMoves[i] += plane.ClosestPoint(vI) - vI;
+                totalWeightedMoves[j] += plane.ClosestPoint(vJ) - vJ;
+                totalWeightedMoves[p] += plane.ClosestPoint(vP) - vP;
+                totalWeightedMoves[q] += plane.ClosestPoint(vQ) - vQ;
+                totalWeights[i] += 1;
+                totalWeights[j] += 1;
+                totalWeights[p] += 1;
+                totalWeights[q] += 1;
+
+            }
         }
 
         private void UpdateVertexPositions()
@@ -77,9 +108,9 @@ namespace MeshGrowth
         {
             int vertexCount = ptMesh.Vertices.Count;
 
-            for(int i = 0;i<vertexCount;i++)
+            for (int i = 0; i < vertexCount; i++)
             {
-                for(int j = i+1;j<vertexCount;j++)
+                for (int j = i + 1; j < vertexCount; j++)
                 {
                     Vector3d move = ptMesh.Vertices[j].ToPoint3d() - ptMesh.Vertices[i].ToPoint3d();
                     double currentDistance = move.Length;
@@ -90,7 +121,7 @@ namespace MeshGrowth
                     totalWeightedMoves[i] += move;
                     totalWeightedMoves[j] -= move;
                     totalWeights[i] += 1;
-                    totalWeights[j] -= 1;
+                    totalWeights[j] += 1;
                 }
             }
         }
@@ -99,17 +130,17 @@ namespace MeshGrowth
         {
             int halfEdgeCount = ptMesh.Halfedges.Count;
 
-            for(int i = 0;i<halfEdgeCount;i+=2)
+            for (int i = 0; i < halfEdgeCount; i += 2)
             {
-                if(ptMesh.Vertices.Count<MaxVertexCount &&
-                   ptMesh.Halfedges.GetLength(i)>0.99*CollisionDistance)
+                if (ptMesh.Vertices.Count < MaxVertexCount &&
+                   ptMesh.Halfedges.GetLength(i) > 0.99 * CollisionDistance)
                 {
                     SplitEdge(i);
                 }
             }
         }
-        
-        
+
+
         private void SplitEdge(int edgeIndex)
         {
             int newHalfEdgeIndex = ptMesh.Halfedges.SplitEdge(edgeIndex);
@@ -124,7 +155,7 @@ namespace MeshGrowth
             if (ptMesh.Halfedges[edgeIndex + 1].AdjacentFace >= 0)
                 ptMesh.Faces.SplitFace(edgeIndex + 1, ptMesh.Halfedges[ptMesh.Halfedges[edgeIndex + 1].NextHalfedge].NextHalfedge);
         }
-        
+
     }
 
 }
