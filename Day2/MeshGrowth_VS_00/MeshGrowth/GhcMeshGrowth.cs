@@ -78,7 +78,14 @@ namespace MeshGrowth
 
             //=============================================================================================
 
+            if (iReset)
+                myMeshGrowthSystem = new MeshGrowthSystem(iStartingMesh);
 
+            myMeshGrowthSystem.CollisionDistance = iCollisionDistance;
+
+            myMeshGrowthSystem.Update();
+
+            DA.SetData("Mesh", myMeshGrowthSystem.GetRhinoMesh());
         }
 
 

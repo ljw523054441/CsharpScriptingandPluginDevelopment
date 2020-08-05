@@ -12,6 +12,79 @@ namespace MeshGrowth
     public class MeshGrowthSystem
     {
 
+        private PlanktonMesh ptMesh;
+
+        public bool Grow = false;
+        public double EdgeLengthConstrainWeight;
+        public double CollisionDistance;
+        public double CollisionWeight;
+        public double BendingResistanceWeight;
+
+        private List<Vector3d> totalWeightedMoves;
+        private List<double> totalWeights;
+
+        public MeshGrowthSystem(Mesh startingMesh)
+        {
+            ptMesh = startingMesh.ToPlanktonMesh();
+        }
+
+        public Mesh GetRhinoMesh()
+        {
+            return ptMesh.ToRhinoMesh();
+        }
+
+        public void Update()
+        {
+            totalWeightedMoves = new List<Vector3d>();
+            totalWeights = new List<double>();
+
+            for (int i = 0; i < ptMesh.Vertices.Count; i++)
+            {
+                totalWeightedMoves.Add(new Vector3d(0, 0, 0));
+                totalWeights.Add(0.0);
+            }
+
+            ProcessCollision();
+            UpdateVertexPositions();
+        }
+
+        private void UpdateVertexPositions()
+        {
+            for (int i = 0; i < ptMesh.Vertices.Count; i++)
+            {
+                if (totalWeights[i] == 0.0) continue;
+
+                Vector3d move = totalWeightedMoves[i] / totalWeights[i];
+                Point3d newPosition = ptMesh.Vertices[i].ToPoint3d() + move;
+                ptMesh.Vertices.SetVertex(i, newPosition.X, newPosition.Y, newPosition.Z);
+            }
+        }
+
+        private void ProcessCollision()
+        {
+            int vertexCount = ptMesh.Vertices.Count;
+
+            for(int i = 0;i<vertexCount;i++)
+            {
+                for(int j = i+1;j<vertexCount;j++)
+                {
+                    Vector3d move = ptMesh.Vertices[i].ToPoint3d() - ptMesh.Vertices[j].ToPoint3d();
+                    double currentDistance = move.Length;
+                    if (currentDistance > CollisionDistance) continue;
+
+                    move *= 0.5 * (currentDistance - CollisionDistance) / currentDistance;
+
+                    totalWeightedMoves[i] += move;
+                    totalWeightedMoves[j] -= move;
+                    totalWeights[i] += 1;
+                    totalWeights[j] -= 1;
+                }
+            }
+        }
+
+        
+
+
         /*
         private void SplitEdge(int edgeIndex)
         {

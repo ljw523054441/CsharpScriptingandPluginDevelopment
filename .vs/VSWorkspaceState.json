@@ -2,9 +2,11 @@
   "ExpandedNodes": [
     "",
     "\\Day2",
+    "\\Day2\\MeshGrowth_VS_00",
+    "\\Day2\\MeshGrowth_VS_00\\MeshGrowth",
     "\\Day2\\Workshop",
     "\\note"
   ],
-  "SelectedNode": "\\Day2\\Workshop\\GhcAverage.cs",
+  "SelectedNode": "\\Day2\\Workshop",
   "PreviewInSolutionExplorer": false
 }
