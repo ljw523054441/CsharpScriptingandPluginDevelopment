@@ -58,7 +58,7 @@ namespace MeshGrowth
             int iSubiterationCount = 0;
             bool iGrow = false;
             int iMaxVertexCount = 0;
-            double iEdgeLengthConstrainWeight = 0.0;
+            double iEdgeLengthConstraintWeight = 0.0;
             double iCollisionDistance = 0.0;
             double iCollisionWeight = 0.0;
             double iBendingResistanceWeight = 0.0;
@@ -69,7 +69,7 @@ namespace MeshGrowth
             DA.GetData("Subiteration Count", ref iSubiterationCount);
             DA.GetData("Grow", ref iGrow);
             DA.GetData("Max. Vertex Count", ref iMaxVertexCount);
-            DA.GetData("Edge Length Constraint Weight", ref iEdgeLengthConstrainWeight);
+            DA.GetData("Edge Length Constraint Weight", ref iEdgeLengthConstraintWeight);
             DA.GetData("Collision Distance", ref iCollisionDistance);
             DA.GetData("Collision Weight", ref iCollisionWeight);
             DA.GetData("Bending Resistance Weight", ref iBendingResistanceWeight);
@@ -83,8 +83,9 @@ namespace MeshGrowth
 
             myMeshGrowthSystem.Grow = iGrow;
             myMeshGrowthSystem.MaxVertexCount = iMaxVertexCount;
-            myMeshGrowthSystem.EdgeLengthConstrainWeight = iEdgeLengthConstrainWeight;
+            myMeshGrowthSystem.EdgeLengthConstraintWeight = iEdgeLengthConstraintWeight;
             myMeshGrowthSystem.CollisionDistance = iCollisionDistance;
+            myMeshGrowthSystem.CollisionWeight = iCollisionWeight;
             myMeshGrowthSystem.BendingResistanceWeight = iBendingResistanceWeight;
             myMeshGrowthSystem.UseRTree = iUseRTree;
 

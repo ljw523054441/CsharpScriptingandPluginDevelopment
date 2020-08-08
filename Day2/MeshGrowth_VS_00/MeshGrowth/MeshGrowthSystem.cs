@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 using Plankton;
@@ -19,7 +20,7 @@ namespace MeshGrowth
 
         public bool UseRTree;
 
-        public double EdgeLengthConstrainWeight;
+        public double EdgeLengthConstraintWeight;
         public double CollisionDistance;
         public double CollisionWeight;
         public double BendingResistanceWeight;
@@ -50,10 +51,71 @@ namespace MeshGrowth
                 totalWeights.Add(0.0);
             }
 
-            ProcessCollision();
+            if (UseRTree) ProcessCollisionUsingRTree();
+            else ProcessCollision();
+
             ProcessBendingResistance();
+            ProcessEdgeLengthConstraint();
 
             UpdateVertexPositions();
+        }
+
+        private void ProcessCollisionUsingRTree()
+        {
+            RTree rTree = new RTree();
+
+            for(int i =0;i<ptMesh.Vertices.Count;i++)
+            {
+                rTree.Insert(ptMesh.Vertices[i].ToPoint3d(), i);
+            }
+
+            for(int i =0;i<ptMesh.Vertices.Count;i++)
+            {
+                Point3d vI = ptMesh.Vertices[i].ToPoint3d();
+                Sphere searchSphere = new Sphere(vI, CollisionDistance);
+
+                List<int>collisionIndices = new List<int>();
+
+                rTree.Search(
+                    searchSphere,
+                    (sender,args) => { if (i<args.Id) collisionIndices.Add(args.Id); });
+
+                foreach(int j in collisionIndices)
+                {
+                    Vector3d move = ptMesh.Vertices[j].ToPoint3d() - ptMesh.Vertices[i].ToPoint3d();
+                    double currentDistance = move.Length;
+
+                    move *= 0.5 * (currentDistance - CollisionDistance) / currentDistance;
+
+                    totalWeightedMoves[i] += move * CollisionWeight;
+                    totalWeightedMoves[j] -= move * CollisionWeight;
+                    totalWeights[i] += CollisionWeight;
+                    totalWeights[j] += CollisionWeight;
+                }
+            }
+        }
+
+        private void ProcessEdgeLengthConstraint()
+        {
+            for (int k = 0; k < ptMesh.Halfedges.Count; k += 2)
+            {
+                int i = ptMesh.Halfedges[k].StartVertex;
+                int j = ptMesh.Halfedges[k + 1].StartVertex;
+
+                Point3d vI = ptMesh.Vertices[i].ToPoint3d();
+                Point3d vJ = ptMesh.Vertices[j].ToPoint3d();
+
+                if (vI.DistanceTo(vJ) < CollisionDistance) continue;
+
+                Vector3d move = vJ - vI;
+                move *= (move.Length - CollisionDistance) * 0.5/move.Length;
+
+                totalWeightedMoves[i] += move * EdgeLengthConstraintWeight;
+                totalWeightedMoves[j] -= move * EdgeLengthConstraintWeight;
+
+                totalWeights[i] += EdgeLengthConstraintWeight;
+                totalWeights[j] += EdgeLengthConstraintWeight;
+            }
         }
 
         private void ProcessBendingResistance()
@@ -73,21 +135,21 @@ namespace MeshGrowth
                 Point3d vQ = ptMesh.Vertices[q].ToPoint3d();
 
                 Vector3d nP = Vector3d.CrossProduct(vJ - vI, vP - vI);
-                Vector3d nQ = Vector3d.CrossProduct(vJ - vI, vQ - vI);
+                Vector3d nQ = Vector3d.CrossProduct(vQ - vI, vJ - vI);
 
-                Vector3d planeNormal = nP + nQ;
+                Vector3d planeNormal = (nP + nQ);
                 Point3d planeOrigin = 0.25 * (vI + vJ + vP + vQ);
 
                 Plane plane = new Plane(planeOrigin, planeNormal);
 
-                totalWeightedMoves[i] += plane.ClosestPoint(vI) - vI;
-                totalWeightedMoves[j] += plane.ClosestPoint(vJ) - vJ;
-                totalWeightedMoves[p] += plane.ClosestPoint(vP) - vP;
-                totalWeightedMoves[q] += plane.ClosestPoint(vQ) - vQ;
-                totalWeights[i] += 1;
-                totalWeights[j] += 1;
-                totalWeights[p] += 1;
-                totalWeights[q] += 1;
+                totalWeightedMoves[i] += (plane.ClosestPoint(vI) - vI) * BendingResistanceWeight;
+                totalWeightedMoves[j] += (plane.ClosestPoint(vJ) - vJ) * BendingResistanceWeight;
+                totalWeightedMoves[p] += (plane.ClosestPoint(vP) - vP) * BendingResistanceWeight;
+                totalWeightedMoves[q] += (plane.ClosestPoint(vQ) - vQ) * BendingResistanceWeight;
+                totalWeights[i] += BendingResistanceWeight;
+                totalWeights[j] += BendingResistanceWeight;
+                totalWeights[p] += BendingResistanceWeight;
+                totalWeights[q] += BendingResistanceWeight;
 
             }
         }
@@ -118,10 +180,10 @@ namespace MeshGrowth
 
                     move *= 0.5 * (currentDistance - CollisionDistance) / currentDistance;
 
-                    totalWeightedMoves[i] += move;
-                    totalWeightedMoves[j] -= move;
-                    totalWeights[i] += 1;
-                    totalWeights[j] += 1;
+                    totalWeightedMoves[i] += move * CollisionWeight;
+                    totalWeightedMoves[j] -= move * CollisionWeight;
+                    totalWeights[i] += CollisionWeight;
+                    totalWeights[j] += CollisionWeight;
                 }
             }
         }
@@ -130,16 +192,15 @@ namespace MeshGrowth
         {
             int halfEdgeCount = ptMesh.Halfedges.Count;
 
-            for (int i = 0; i < halfEdgeCount; i += 2)
+            for (int k = 0; k < halfEdgeCount; k += 2)
             {
                 if (ptMesh.Vertices.Count < MaxVertexCount &&
-                   ptMesh.Halfedges.GetLength(i) > 0.99 * CollisionDistance)
+                   ptMesh.Halfedges.GetLength(k) > 0.99 * CollisionDistance)
                 {
-                    SplitEdge(i);
+                    SplitEdge(k);
                 }
             }
         }
-
 
         private void SplitEdge(int edgeIndex)
         {
