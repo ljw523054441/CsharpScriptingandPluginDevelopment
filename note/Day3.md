@@ -204,7 +204,7 @@ private void RunScript(bool iReset, Mesh iStartingMesh, int iSubiterationCount, 
 ### Use Python to access codes written in C#
 在Ghpython Component中输入如下
 ```python
-import clr#导入cluster
+import clr#clr是公共运行时环境，这个模块是与C#交互的核心
 clr.AddReferenceToFileAndPath(r"C:\Users\po\AppData\Roaming\Grasshopper\Libraries\MeshGrowth.gha")
 #字符串加r，是为了防止字符串被转译。为了告诉编译器这个string是个raw string，例如，\n 在raw string中，是两个字符，\和n， 而不会转意为换行符。
 
